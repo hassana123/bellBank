@@ -23,21 +23,19 @@ export async function getAuth(): Promise<LoginResponseType> {
 }
 // START: Added for Netlify CSRF handling - Fetches CSRF token from /api/health
 export async function getCsrfToken(): Promise<{ csrfToken: string }> {
-  const response = await HttpInstance.current().get<ResponseType<{ ip?: string }>>('/api/health');
-  
-  let csrfToken = '';
-  // Axios typically normalizes header names to lowercase, so check for that first.
-  // Ensure CSRF_TOKEN is correctly defined (e.g., 'X-Csrf-Token')
-  if (response.headers && response.headers[CSRF_TOKEN.toLowerCase()]) {
-    csrfToken = response.headers[CSRF_TOKEN.toLowerCase()];
-  } else if (response.headers && response.headers[CSRF_TOKEN]) { // Fallback to original case if not lowercased
-    csrfToken = response.headers[CSRF_TOKEN];
-  }
-  // REMOVED: else if (response.data?.data?.csrfToken) { // This line caused the TypeScript error
-  // REMOVED:   csrfToken = response.data.data.csrfToken;
-  // REMOVED: }
+  const response = await HttpInstance.current().get('/api/health');
 
-  if (!csrfToken) throw new AppError(400, 'CSRF TOKEN was not provided in health check response');
+  const headers = response.headers || {};
+  const csrfHeaderKey = (CSRF_TOKEN || 'x-csrf-token').toLowerCase();
+
+  let csrfToken = headers[csrfHeaderKey];
+
+  if (!csrfToken) {
+    console.warn('[CSRF] Header not found:', csrfHeaderKey);
+    console.warn('[CSRF] Available headers:', headers);
+
+    throw new AppError(400, 'CSRF TOKEN was not provided in health check response');
+  }
 
   return { csrfToken };
 }

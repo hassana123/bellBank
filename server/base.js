@@ -154,7 +154,7 @@ export async function healthController(req, res) {
     // Add CSRF_TOKEN IF NOT PRESENT
     const csrfToken = cookies[CSRF_TOKEN];
     if (!csrfToken) generateCsrfTokenInResponse(res);
-    else res.setHeader(CSRF_TOKEN, csrfToken);
+    else res.setHeader("X-Csrf-Token", csrfToken);
 
     res.status(200).json({
       status: 'success',
