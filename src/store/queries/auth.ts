@@ -1,0 +1,114 @@
+// src/store/queries/auth.ts
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import * as AuthService from '~/server/services/auth.service';
+import type { LoginRequestDataType, LoginResponseType, LogoutResponseType, MutationOptionsType } from '~/types';
+import { AppError } from '~/utils/errors';
+// START: Modified for Netlify CSRF handling - Import CSRF_TOKEN_TAG
+import tags from '../tags';
+import { useAuthContext, useUserContext } from '../contexts';
+
+
+// ****** Queries ******
+
+// START: Added for Netlify CSRF handling - New query to fetch CSRF token
+export function useGetCsrfTokenQuery() {
+  const query = useQuery<{ csrfToken: string }>({
+    queryKey: [tags.CsrfToken], // Use the new tag from the default import
+    async queryFn() {
+      return AuthService.getCsrfToken();
+    },
+    retry: false,
+    staleTime: Infinity, // CSRF token doesn't change often, can be stale indefinitely
+  });
+
+  return query;
+}
+// END: Added for Netlify CSRF handling
+
+
+// START: Modified for Netlify CSRF handling - Added 'enabled' prop
+export function useGetAuthQuery({ initialData, enabled }: { initialData?: LoginResponseType; enabled?: boolean }) {
+  const query = useQuery<LoginResponseType>({
+    queryKey: [tags.Auth], // Use the tag from the default import
+    async queryFn() {
+      return AuthService.getAuth();
+    },
+    initialData,
+    retry: false,
+    enabled: enabled ?? true, // Default to true if not provided
+  });
+
+  return query;
+}
+// END: Modified for Netlify CSRF handling
+// get auth status
+// export function useGetAuthQuery({ initialData }: { initialData?: LoginResponseType }) {
+//   const query = useQuery<LoginResponseType>({
+//     queryKey: [tags.Auth],
+//     async queryFn() {
+//       return AuthService.getAuth();
+//     },
+//     initialData,
+//     retry: false,
+//   });
+
+//   return query;
+// }
+
+// ****** Mutations ******
+export function useLoginMutation(options: MutationOptionsType<LoginResponseType['data']>) {
+  const { csrfToken } = useAuthContext(); // retrieves CSRF from context
+  //const queryClient = useQueryClient();   // allows us to clear cache if needed
+
+  const mutation = useMutation({
+    async mutationFn(data: LoginRequestDataType) {
+      if (!csrfToken) throw new AppError(500, 'CSRF Token is required');
+      return AuthService.login({ csrfToken, data });
+    },
+    onSuccess(response) {
+      // You can update user context or redirect here
+      options.onSuccess(response);
+    },
+    // onError(error) {
+    //   options.onError?.("Login failed: " + error.message);
+    // },
+  });
+
+  return mutation;
+}
+
+// login
+// export function useLoginMutation(options: MutationOptionsType<LoginResponseType['data']>) {
+//   const { csrfToken } = useAuthContext();
+//   const mutation = useMutation({
+//     async mutationFn(data: LoginRequestDataType) {
+//       if (!csrfToken) throw new AppError(500, 'CSRF Token is required');
+//       return AuthService.login({ csrfToken, data });
+//     },
+//     onSuccess(response) {
+//       options.onSuccess(response);
+//     },
+//   });
+
+//   return mutation;
+// }
+
+// logout
+export function useLogoutMutation(options: MutationOptionsType<LogoutResponseType['data']>) {
+  const queryClient = useQueryClient();
+
+  const { csrfToken, token } = useUserContext();
+
+  const mutation = useMutation({
+    async mutationFn() {
+      return AuthService.logout({ csrfToken, token });
+    },
+    onSuccess(response) {
+      queryClient.clear();
+      options.onSuccess(response);
+    },
+  });
+
+  return mutation;
+}

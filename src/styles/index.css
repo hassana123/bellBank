@@ -1,0 +1,400 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-font: 'Poppins', sans-serif !important;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+  scrollbar-width: thin;
+}
+
+body,
+input {
+  background-color: var(--grayscale-color);
+  font-family: var(--primary-font);
+  font-weight: 400;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+  scrollbar-width: thin;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+a,
+ol,
+ul,
+dl,
+button,
+button span {
+  font-family: var(--primary-font);
+  margin: 0;
+  padding: 0;
+}
+
+abbr,
+abbr[title] {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+p {
+  margin: 0;
+}
+
+input {
+  box-shadow: none !important;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  --webkit-appearance: none;
+}
+
+ul {
+  list-style-type: none;
+}
+
+/* Custom utility classes for BellCollect */
+.bg-primary-color {
+  background-color: var(--primary-color);
+}
+
+.primary-text-color {
+  color: var(--primary-color);
+}
+
+.secondary-text-color {
+  color: var(--secondary-color);
+}
+
+.tertiary-dark-text-color {
+  color: var(--tertiary-dark-color);
+}
+
+.tertiary-text-color {
+  color: var(--tertiary-color);
+}
+
+.gray-border-color {
+  border-color: var(--gray-border-color);
+}
+
+.dark-text-color {
+  color: var(--dark-text-color);
+}
+
+.container-wrapper {
+  @apply h-full max-w-[800px] mx-auto p-4 w-full lg:py-8 lg:mt-[4.85rem];
+}
+
+/* Enhanced Form Styling */
+.helptext-bg-color {
+  background-color: var(--helptext-bg-color);
+}
+
+.helptext-color {
+  color: var(--helptext-color);
+}
+
+.form-field-label {
+  @apply block mt-1 mb-1.5 text-xs sm:text-sm font-medium;
+  color: var(--secondary-color);
+}
+
+.form-field-item {
+  @apply border font-medium rounded-lg text-sm md:text-base transition-all duration-200;
+}
+
+.form-field-item:focus {
+  @apply ring-2 ring-primary/20 border-primary;
+}
+
+/* Enhanced Button Styles */
+.btn-primary {
+  @apply bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2;
+}
+
+.btn-secondary {
+  @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-lg border border-gray-200 transition-all duration-200 flex items-center justify-center gap-2;
+}
+
+/* Card Enhancements */
+.card-elevated {
+  @apply bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200;
+}
+
+.card-gradient {
+  @apply bg-gradient-to-br from-primary to-primary/90 text-white rounded-xl;
+}
+
+/* Dropdown Button Start */
+.dropdown-item-button {
+  color: var(--secondary-color) !important;
+  @apply !justify-start hover:bg-gray-50 transition-colors duration-200;
+}
+
+.dropdown-item-button-label {
+  font-weight: 400;
+  @apply text-xs md:text-sm;
+}
+
+/* Enhanced Table Styling */
+.table-tools-container {
+  border-color: var(--gray-border-color);
+  @apply border-t border-solid border-0 p-4 bg-white rounded-t-lg;
+}
+
+.table-container {
+  @apply border-0 relative overflow-x-auto max-h-[31rem] bg-white rounded-lg shadow-sm;
+}
+
+.table-container > table {
+  border-collapse: separate;
+  border-spacing: 0;
+  @apply divide-y divide-gray-100 min-w-full;
+}
+
+.table-data-color {
+  color: var(--table-data-color);
+}
+
+.table-container .table-icon-bg {
+  background-color: var(--table-icon-bg);
+}
+
+.table-container thead th {
+  @apply sticky top-0 z-10 bg-gray-50;
+  border-color: var(--gray-border-color);
+  @apply border border-x-0 border-solid;
+}
+
+.table-container > table thead {
+  @apply bg-gray-50;
+  border-color: var(--gray-border-color);
+  @apply border border-x-0 border-solid;
+}
+
+.table-container .table-head {
+  color: var(--table-data-color);
+  @apply font-medium px-4 py-3 text-left text-sm tracking-wider bg-gray-50;
+}
+
+.table-container .table-data {
+  color: var(--table-data-color);
+  @apply leading-6 max-w-[17rem] min-w-[5rem] px-4 py-3 whitespace-break-spaces text-sm;
+}
+
+.table-container .table-data-sn {
+  color: var(--table-data-color);
+  @apply w-2 text-center text-sm;
+}
+
+.table-container .table-footer-data {
+  color: var(--table-data-color);
+  @apply capitalize px-4 py-4 text-sm font-medium;
+}
+
+.table-avatar-title-sub-cell {
+  @apply flex flex-wrap items-center w-full;
+}
+
+.table-avatar-title-sub-cell-image {
+  @apply flex-shrink-0 h-10 w-10;
+}
+
+.table-avatar-title-sub-cell-image > div {
+  @apply h-10 relative rounded-full w-10;
+}
+
+.table-avatar-title-sub-cell-image > div img {
+  @apply h-full rounded-full w-full object-cover;
+}
+
+.table-avatar-title-sub-cell-image-placeholder {
+  background-color: var(--grayscale-color);
+  color: var(--dark-color);
+  @apply h-10 inline-flex items-center justify-center rounded-full w-10 font-semibold text-sm;
+}
+
+.table-container tbody tr:nth-child(even) .table-avatar-title-sub-cell-image-placeholder {
+  @apply bg-gray-100;
+}
+
+.table-avatar-title-sub-cell-image-placeholder.image-icon > span {
+  @apply left-[0.05rem] relative top-[0.075rem];
+}
+
+.table-avatar-title-sub-cell-title {
+  @apply pl-4 text-left;
+  width: calc(100% - 3rem);
+}
+
+.table-avatar-title-sub-cell-title .title {
+  color: var(--dark-text-color);
+  @apply leading-6 mb-0.5 text-sm font-semibold whitespace-break-spaces;
+  word-wrap: break-word;
+}
+
+.table-avatar-title-sub-cell-title .subtitle {
+  color: var(--secondary-color);
+  @apply leading-5 m-0 normal-case font-normal whitespace-break-spaces text-sm;
+  word-wrap: break-word;
+}
+
+/* Enhanced Notification Styling */
+.notification-alert {
+  @apply bottom-6 fixed left-0 w-full z-50;
+}
+
+.notification-alert-wrapper {
+  @apply flex justify-center w-full px-4;
+}
+
+.notification-alert-msg-container {
+  @apply bg-gray-800 flex items-start gap-3 min-w-96 max-w-md px-6 py-4 rounded-xl text-sm text-white shadow-lg backdrop-blur-sm;
+}
+
+.notification-alert-msg-container.danger,
+.notification-alert-msg-container.error {
+  @apply bg-red-600;
+}
+
+.notification-alert-msg-container.success {
+  @apply bg-green-600;
+}
+
+.notification-alert-msg-container.warning {
+  @apply bg-yellow-600;
+}
+
+/* Enhanced Scrollbar */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+  border: 2px solid #f8fafc;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Status Indicators */
+.status-dot {
+  @apply inline-block w-2 h-2 rounded-full mr-2;
+}
+
+.status-dot.success {
+  @apply bg-green-500;
+}
+
+.status-dot.pending {
+  @apply bg-yellow-500;
+}
+
+.status-dot.failed {
+  @apply bg-red-500;
+}
+
+.status-dot.processing {
+  @apply bg-blue-500 animate-pulse;
+}
+
+/* Loading States */
+.skeleton {
+  @apply bg-gray-200 animate-pulse rounded;
+}
+
+.skeleton-text {
+  @apply h-4 bg-gray-200 rounded animate-pulse;
+}
+
+.skeleton-avatar {
+  @apply w-10 h-10 bg-gray-200 rounded-full animate-pulse;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .container-wrapper {
+    @apply px-4 py-4;
+  }
+  
+  .table-container {
+    @apply text-xs;
+  }
+  
+  .notification-alert-msg-container {
+    @apply min-w-0 mx-4;
+  }
+}
+
+/* Focus States */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary;
+}
+
+/* Hover Effects */
+.hover-lift {
+  @apply transition-transform duration-200 hover:-translate-y-1;
+}
+
+.hover-glow {
+  @apply transition-shadow duration-200 hover:shadow-lg hover:shadow-primary/10;
+}
