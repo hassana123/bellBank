@@ -25,22 +25,40 @@ export function useGetAuthQuery({ initialData }: { initialData?: LoginResponseTy
 }
 
 // ****** Mutations ******
+// export function useLoginMutation(options: MutationOptionsType<LoginResponseType['data']>) {
+//   const { csrfToken } = useAuthContext(); // retrieves CSRF from context
+// //  const queryClient = useQueryClient();   // allows us to clear cache if needed
+
+//   const mutation = useMutation({
+//     async mutationFn(data: LoginRequestDataType) {
+//       if (!csrfToken) throw new AppError(500, 'CSRF Token is required');
+//       return AuthService.login({ csrfToken, data });
+//     },
+//     onSuccess(response) {
+//       // You can update user context or redirect here
+//       options.onSuccess(response);
+//     },
+//     // onError(error) {
+//     //   options.onError?.("Login failed: " + error.message);
+//     // },
+//   });
+
+//   return mutation;
+// }
 export function useLoginMutation(options: MutationOptionsType<LoginResponseType['data']>) {
-  const { csrfToken } = useAuthContext(); // retrieves CSRF from context
-//  const queryClient = useQueryClient();   // allows us to clear cache if needed
+  const { csrfToken } = useAuthContext();
 
   const mutation = useMutation({
     async mutationFn(data: LoginRequestDataType) {
-      if (!csrfToken) throw new AppError(500, 'CSRF Token is required');
-      return AuthService.login({ csrfToken, data });
+      const token = csrfToken || (import.meta.env.VITE_TEST_MODE === '1' ? 'mock-csrf-token' : null);
+
+      if (!token) throw new AppError(500, 'CSRF Token is required');
+
+      return AuthService.login({ csrfToken: token, data });
     },
     onSuccess(response) {
-      // You can update user context or redirect here
       options.onSuccess(response);
     },
-    // onError(error) {
-    //   options.onError?.("Login failed: " + error.message);
-    // },
   });
 
   return mutation;
