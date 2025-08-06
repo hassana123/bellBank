@@ -1,9 +1,10 @@
+//
 import { CSRF_TOKEN } from '~/config';
 import type { LoginRequestDataType, LoginResponseType, LogoutResponseType, ResponseType } from '~/types';
 import { AppError } from '~/utils/errors';
 import HttpInstance from '~/utils/http';
-//import * as AuthSerializer from '../serializers/auth.serializer';
-//import { saveCredentials } from '../utils/auth';
+import * as AuthSerializer from '../serializers/auth.serializer';
+import { saveCredentials } from '../utils/auth';
 import { NewSuccessDataResponse } from '../utils/response';
 
 export async function getAuth(): Promise<LoginResponseType> {
@@ -21,25 +22,7 @@ export async function getAuth(): Promise<LoginResponseType> {
 
   return NewSuccessDataResponse(result, responseData.message);
 }
-// START: Added for Netlify CSRF handling - Fetches CSRF token from /api/health
-export async function getCsrfToken(): Promise<{ csrfToken: string }> {
-  const response = await HttpInstance.current().get('/api/health');
 
-  const headers = response.headers || {};
-  const csrfHeaderKey = (CSRF_TOKEN || 'x-csrf-token').toLowerCase();
-
-  let csrfToken = headers[csrfHeaderKey];
-
-  if (!csrfToken) {
-    console.warn('[CSRF] Header not found:', csrfHeaderKey);
-    console.warn('[CSRF] Available headers:', headers);
-
-    throw new AppError(400, 'CSRF TOKEN was not provided in health check response');
-  }
-
-  return { csrfToken };
-}
-// END: Added for Netlify CSRF handling
 // export async function login({
 //   csrfToken,
 //   data,
@@ -110,4 +93,3 @@ export async function logout({ csrfToken, token }: { csrfToken: string; token: s
 
   return NewSuccessDataResponse({ csrfToken: newCsrfToken }, responseData.message);
 }
-

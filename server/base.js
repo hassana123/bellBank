@@ -12,7 +12,7 @@ import * as yup from 'yup';
 
 dotenv.config();
 
-export const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://bellb.netlify.app/').split(',');
+export const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',');
 export const API_AUTH_LIMITER_EXPIRES =
   process.env.API_AUTH_LIMITER_EXPIRES && !isNaN(+process.env.API_AUTH_LIMITER_EXPIRES)
     ? +process.env.API_AUTH_LIMITER_EXPIRES
@@ -52,29 +52,20 @@ baseRouter.use(helmet());
 // ****** CORS Start ********
 
 // Configure CORS options
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     // Allow requests with no origin (like mobile apps or curl)
-//     if (!origin || ALLOWED_ORIGINS.length === 0) return callback(null, true);
-//     // Allow if the origin is in our allowed list
-//     if (ALLOWED_ORIGINS.indexOf(origin) === -1) {
-//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-//       return callback(new Error(msg), false);
-//     }
-//     return callback(null, true);
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
-//   credentials: true, // This is crucial for sending cookies and custom headers
-  
-// };
 const corsOptions = {
-  origin: (origin, callback) => { /* ... */ },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-  exposedHeaders: [CSRF_TOKEN],  // ensure CSRF header is readable
-  allowedHeaders: ['Content-Type', CSRF_TOKEN, 'Authorization'], // covers headers you use
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin || ALLOWED_ORIGINS.length === 0) return callback(null, true);
+    // Allow if the origin is in our allowed list
+    if (ALLOWED_ORIGINS.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
+  credentials: true, // This is crucial for sending cookies and custom headers
 };
-
 
 // Apply the CORS middleware with your custom options
 baseRouter.use(cors(corsOptions));
@@ -147,60 +138,27 @@ export const loginRequestSchema = yup.object({
 // ********** Controllers Start ***********
 
 // // Controller to check if the backend server is live
-// export async function healthController(req, res) {
-//   try {
-//     //const cookies = cookie.parse(req.headers.cookie || '');
-
-//     // Add CSRF_TOKEN IF NOT PRESENT
-//     //const csrfToken = cookies[CSRF_TOKEN];
-//     // if (!csrfToken) generateCsrfTokenInResponse(res);
-//     // else res.setHeader("X-Csrf-Token", csrfToken);
-    
-// generateCsrfTokenInResponse(res);
-//     res.status(200).json({
-//       status: 'success',
-//       message: 'Health is Good',
-//       data: { ip: TEST_MODE ? req.ip : undefined },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       status: 'error',
-//       message: TEST_MODE && error.message ? error.message : 'Something went wrong on the client server.',
-//     });
-//   }
-// }
-
 export async function healthController(req, res) {
   try {
-    const csrfToken = generateCsrfToken();
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    const cookies = cookie.parse(req.headers.cookie || '');
 
-    // ✅ 1. Set it in a response header
-    res.setHeader(CSRF_TOKEN, csrfToken); // 'X-Csrf-Token'
+    // Add CSRF_TOKEN IF NOT PRESENT
+    const csrfToken = cookies[CSRF_TOKEN];
+    if (!csrfToken) generateCsrfTokenInResponse(res);
+    else res.setHeader(CSRF_TOKEN, csrfToken);
 
-    // ✅ 2. Set it as an HTTP cookie
-    res.setHeader('Set-Cookie', cookie.serialize(CSRF_TOKEN, csrfToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-    }));
-
-    // ✅ 3. Return normal response
     res.status(200).json({
-      success: true,
-      message: 'Health OK',
-      data: { ip: req.ip },
+      status: 'success',
+      message: 'Health is Good',
+      data: { ip: TEST_MODE ? req.ip : undefined },
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
-      message: error.message || 'Something went wrong on the client server.',
+      status: 'error',
+      message: TEST_MODE && error.message ? error.message : 'Something went wrong on the client server.',
     });
   }
 }
-
-
 
 // // Login Controller
 export async function loginController(req, res) {
@@ -344,75 +302,37 @@ export function generateCsrfToken() {
 
 // Function to generate a CSRF token and place in the response headers
 // if auth token is passed in then set the auth header
-// export function generateCsrfTokenInResponse(res, token) {
-//   const csrfToken = generateCsrfToken();
-//   res.setHeader(CSRF_TOKEN, csrfToken);
-
-//   const cookies = [
-//     cookie.serialize(CSRF_TOKEN, csrfToken, {
-//       expires: CSRF_TOKEN_EXPIRES ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000) : undefined,
-//       httpOnly: true,
-//       path: '/',
-//       sameSite: 'strict',
-//       secure: NODE_ENV !== 'development',
-//     }),
-//   ];
-//   if (token) {
-//     cookies.push(
-//       cookie.serialize(AUTH_KEY, token, {
-//         expires: new Date(Date.now() + JWT_EXPIRES * 1000),
-//         httpOnly: true,
-//         path: '/',
-//         sameSite: 'strict',
-//         secure: NODE_ENV !== 'development',
-//       })
-//     );
-//   } else if (token === null) {
-//     cookies.push(
-//       cookie.serialize(AUTH_KEY, '', {
-//         expires: new Date(0),
-//         httpOnly: true,
-//         path: '/',
-//         sameSite: 'strict',
-//         secure: NODE_ENV !== 'development',
-//       })
-//     );
-//   }
-
-//   res.setHeader('Set-Cookie', cookies);
-// }
 export function generateCsrfTokenInResponse(res, token) {
   const csrfToken = generateCsrfToken();
   res.setHeader(CSRF_TOKEN, csrfToken);
 
-  const cookieBase = {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'Lax',     // ✅ Prevents cookie blocking on Netlify
-    secure: true         // ✅ Required for HTTPS
-  };
-
   const cookies = [
     cookie.serialize(CSRF_TOKEN, csrfToken, {
-      ...cookieBase,
-      expires: CSRF_TOKEN_EXPIRES
-        ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000)
-        : undefined
-    })
+      expires: CSRF_TOKEN_EXPIRES ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000) : undefined,
+      httpOnly: true,
+      path: '/',
+      sameSite: 'strict',
+      secure: NODE_ENV !== 'development',
+    }),
   ];
-
   if (token) {
     cookies.push(
       cookie.serialize(AUTH_KEY, token, {
-        ...cookieBase,
-        expires: new Date(Date.now() + JWT_EXPIRES * 1000)
+        expires: new Date(Date.now() + JWT_EXPIRES * 1000),
+        httpOnly: true,
+        path: '/',
+        sameSite: 'strict',
+        secure: NODE_ENV !== 'development',
       })
     );
   } else if (token === null) {
     cookies.push(
       cookie.serialize(AUTH_KEY, '', {
-        ...cookieBase,
-        expires: new Date(0)
+        expires: new Date(0),
+        httpOnly: true,
+        path: '/',
+        sameSite: 'strict',
+        secure: NODE_ENV !== 'development',
       })
     );
   }

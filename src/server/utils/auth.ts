@@ -1,4 +1,3 @@
-// src/server/utils/auth.ts
 import { CSRF_TOKEN } from '~/config/app';
 import type { LoginResponseType, ServerLoginResponseType } from '~/types';
 import HttpInstance from '~/utils/http';
