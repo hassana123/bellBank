@@ -52,21 +52,29 @@ baseRouter.use(helmet());
 // ****** CORS Start ********
 
 // Configure CORS options
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin || ALLOWED_ORIGINS.length === 0) return callback(null, true);
-    // Allow if the origin is in our allowed list
-    if (ALLOWED_ORIGINS.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
-  credentials: true, // This is crucial for sending cookies and custom headers
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     // Allow requests with no origin (like mobile apps or curl)
+//     if (!origin || ALLOWED_ORIGINS.length === 0) return callback(null, true);
+//     // Allow if the origin is in our allowed list
+//     if (ALLOWED_ORIGINS.indexOf(origin) === -1) {
+//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+//       return callback(new Error(msg), false);
+//     }
+//     return callback(null, true);
+//   },
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
+//   credentials: true, // This is crucial for sending cookies and custom headers
   
+// };
+const corsOptions = {
+  origin: (origin, callback) => { /* ... */ },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  exposedHeaders: [CSRF_TOKEN],  // ensure CSRF header is readable
+  allowedHeaders: ['Content-Type', CSRF_TOKEN, 'Authorization'], // covers headers you use
 };
+
 
 // Apply the CORS middleware with your custom options
 baseRouter.use(cors(corsOptions));
@@ -344,32 +352,34 @@ export function generateCsrfTokenInResponse(res, token) {
   const csrfToken = generateCsrfToken();
   res.setHeader(CSRF_TOKEN, csrfToken);
 
-  const cookieOptions = {
+  const cookieBase = {
     httpOnly: true,
     path: '/',
-    sameSite: 'Lax', // ✅ changed from 'strict'
-    secure: true,     // ✅ always true for Netlify (uses HTTPS)
+    sameSite: 'Lax',     // ✅ Prevents cookie blocking on Netlify
+    secure: true         // ✅ Required for HTTPS
   };
 
   const cookies = [
     cookie.serialize(CSRF_TOKEN, csrfToken, {
-      ...cookieOptions,
-      expires: CSRF_TOKEN_EXPIRES ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000) : undefined,
-    }),
+      ...cookieBase,
+      expires: CSRF_TOKEN_EXPIRES
+        ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000)
+        : undefined
+    })
   ];
 
   if (token) {
     cookies.push(
       cookie.serialize(AUTH_KEY, token, {
-        ...cookieOptions,
-        expires: new Date(Date.now() + JWT_EXPIRES * 1000),
+        ...cookieBase,
+        expires: new Date(Date.now() + JWT_EXPIRES * 1000)
       })
     );
   } else if (token === null) {
     cookies.push(
       cookie.serialize(AUTH_KEY, '', {
-        ...cookieOptions,
-        expires: new Date(0), // Expire immediately
+        ...cookieBase,
+        expires: new Date(0)
       })
     );
   }
