@@ -147,27 +147,60 @@ export const loginRequestSchema = yup.object({
 // ********** Controllers Start ***********
 
 // // Controller to check if the backend server is live
+// export async function healthController(req, res) {
+//   try {
+//     //const cookies = cookie.parse(req.headers.cookie || '');
+
+//     // Add CSRF_TOKEN IF NOT PRESENT
+//     //const csrfToken = cookies[CSRF_TOKEN];
+//     // if (!csrfToken) generateCsrfTokenInResponse(res);
+//     // else res.setHeader("X-Csrf-Token", csrfToken);
+    
+// generateCsrfTokenInResponse(res);
+//     res.status(200).json({
+//       status: 'success',
+//       message: 'Health is Good',
+//       data: { ip: TEST_MODE ? req.ip : undefined },
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       status: 'error',
+//       message: TEST_MODE && error.message ? error.message : 'Something went wrong on the client server.',
+//     });
+//   }
+// }
+
 export async function healthController(req, res) {
   try {
-    const cookies = cookie.parse(req.headers.cookie || '');
+    const csrfToken = generateCsrfToken();
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Add CSRF_TOKEN IF NOT PRESENT
-    const csrfToken = cookies[CSRF_TOKEN];
-    if (!csrfToken) generateCsrfTokenInResponse(res);
-    else res.setHeader("X-Csrf-Token", csrfToken);
+    // ✅ 1. Set it in a response header
+    res.setHeader(CSRF_TOKEN, csrfToken); // 'X-Csrf-Token'
 
+    // ✅ 2. Set it as an HTTP cookie
+    res.setHeader('Set-Cookie', cookie.serialize(CSRF_TOKEN, csrfToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    }));
+
+    // ✅ 3. Return normal response
     res.status(200).json({
-      status: 'success',
-      message: 'Health is Good',
-      data: { ip: TEST_MODE ? req.ip : undefined },
+      success: true,
+      message: 'Health OK',
+      data: { ip: req.ip },
     });
   } catch (error) {
     res.status(500).json({
-      status: 'error',
-      message: TEST_MODE && error.message ? error.message : 'Something went wrong on the client server.',
+      success: false,
+      message: error.message || 'Something went wrong on the client server.',
     });
   }
 }
+
+
 
 // // Login Controller
 export async function loginController(req, res) {
