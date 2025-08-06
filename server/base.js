@@ -12,7 +12,7 @@ import * as yup from 'yup';
 
 dotenv.config();
 
-export const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',');
+export const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://bellb.netlify.app/').split(',');
 export const API_AUTH_LIMITER_EXPIRES =
   process.env.API_AUTH_LIMITER_EXPIRES && !isNaN(+process.env.API_AUTH_LIMITER_EXPIRES)
     ? +process.env.API_AUTH_LIMITER_EXPIRES
@@ -303,37 +303,73 @@ export function generateCsrfToken() {
 
 // Function to generate a CSRF token and place in the response headers
 // if auth token is passed in then set the auth header
+// export function generateCsrfTokenInResponse(res, token) {
+//   const csrfToken = generateCsrfToken();
+//   res.setHeader(CSRF_TOKEN, csrfToken);
+
+//   const cookies = [
+//     cookie.serialize(CSRF_TOKEN, csrfToken, {
+//       expires: CSRF_TOKEN_EXPIRES ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000) : undefined,
+//       httpOnly: true,
+//       path: '/',
+//       sameSite: 'strict',
+//       secure: NODE_ENV !== 'development',
+//     }),
+//   ];
+//   if (token) {
+//     cookies.push(
+//       cookie.serialize(AUTH_KEY, token, {
+//         expires: new Date(Date.now() + JWT_EXPIRES * 1000),
+//         httpOnly: true,
+//         path: '/',
+//         sameSite: 'strict',
+//         secure: NODE_ENV !== 'development',
+//       })
+//     );
+//   } else if (token === null) {
+//     cookies.push(
+//       cookie.serialize(AUTH_KEY, '', {
+//         expires: new Date(0),
+//         httpOnly: true,
+//         path: '/',
+//         sameSite: 'strict',
+//         secure: NODE_ENV !== 'development',
+//       })
+//     );
+//   }
+
+//   res.setHeader('Set-Cookie', cookies);
+// }
 export function generateCsrfTokenInResponse(res, token) {
   const csrfToken = generateCsrfToken();
   res.setHeader(CSRF_TOKEN, csrfToken);
 
+  const cookieOptions = {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'Lax', // ✅ changed from 'strict'
+    secure: true,     // ✅ always true for Netlify (uses HTTPS)
+  };
+
   const cookies = [
     cookie.serialize(CSRF_TOKEN, csrfToken, {
+      ...cookieOptions,
       expires: CSRF_TOKEN_EXPIRES ? new Date(Date.now() + CSRF_TOKEN_EXPIRES * 1000) : undefined,
-      httpOnly: true,
-      path: '/',
-      sameSite: 'strict',
-      secure: NODE_ENV !== 'development',
     }),
   ];
+
   if (token) {
     cookies.push(
       cookie.serialize(AUTH_KEY, token, {
+        ...cookieOptions,
         expires: new Date(Date.now() + JWT_EXPIRES * 1000),
-        httpOnly: true,
-        path: '/',
-        sameSite: 'strict',
-        secure: NODE_ENV !== 'development',
       })
     );
   } else if (token === null) {
     cookies.push(
       cookie.serialize(AUTH_KEY, '', {
-        expires: new Date(0),
-        httpOnly: true,
-        path: '/',
-        sameSite: 'strict',
-        secure: NODE_ENV !== 'development',
+        ...cookieOptions,
+        expires: new Date(0), // Expire immediately
       })
     );
   }
