@@ -27,7 +27,7 @@ export function useGetAuthQuery({ initialData }: { initialData?: LoginResponseTy
 // ****** Mutations ******
 export function useLoginMutation(options: MutationOptionsType<LoginResponseType['data']>) {
   const { csrfToken } = useAuthContext(); // retrieves CSRF from context
-  const queryClient = useQueryClient();   // allows us to clear cache if needed
+//  const queryClient = useQueryClient();   // allows us to clear cache if needed
 
   const mutation = useMutation({
     async mutationFn(data: LoginRequestDataType) {

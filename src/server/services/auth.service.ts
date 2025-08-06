@@ -3,8 +3,8 @@ import { CSRF_TOKEN } from '~/config';
 import type { LoginRequestDataType, LoginResponseType, LogoutResponseType, ResponseType } from '~/types';
 import { AppError } from '~/utils/errors';
 import HttpInstance from '~/utils/http';
-import * as AuthSerializer from '../serializers/auth.serializer';
-import { saveCredentials } from '../utils/auth';
+//import * as AuthSerializer from '../serializers/auth.serializer';
+//import { saveCredentials } from '../utils/auth';
 import { NewSuccessDataResponse } from '../utils/response';
 
 export async function getAuth(): Promise<LoginResponseType> {
