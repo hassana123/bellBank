@@ -2,14 +2,14 @@ import type { ResponseType } from './base';
 
 export type AuthDataType = {
   id: number;
-  firstname: string;
-  middlename: string | null;
-  lastname: string;
-  fullname: string;
+  name: string;
+  displayName: string | null;
   email: string;
   phone: string;
-  photo: string | null;
-  gender: string;
+  address: string | null;
+  city: string;
+  state: string;
+  logo: string | null;
 };
 
 export type LoginRequestDataType = {
@@ -21,21 +21,20 @@ export type LoginResponseType = ResponseType<{
   token: string;
   user: AuthDataType;
 }>;
-export type LogoutResponseType = ResponseType<{
-  csrfToken?: string;
-}>;
 export type ServerLoginResponseType = ResponseType<{
   token: string;
   user: AuthDataType;
 }>;
 
-export type VerifyLoginRequestDataType = { otp: string };
-export type VerifyLoginResponseDataType = ResponseType<AuthDataType>;
-
 export type ResetPasswordRequestDataType = { email: string };
+export type ResetPasswordResponseType = ResponseType<{ token: string }>;
 
-export type VerifyResetPasswordRequestDataType = { otp: string };
+export type VerifyResetPasswordRequestDataType = { otp: string; token: string };
+export type VerifyResetPasswordResponseType = ResponseType<{ token: string }>;
 
 export type ConfirmResetPasswordRequestDataType = {
   password: string;
+  token: string;
 };
+
+export type ChangePasswordRequestDataType = { oldPassword: string; newPassword: string; confirmPassword: string };

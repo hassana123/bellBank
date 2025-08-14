@@ -17,4 +17,4 @@ export const CSRF_TOKEN = import.meta.env.VITE_CSRF_TOKEN || 'X-Csrf-Token';
 export const USER_DATA_KEY = 'user_data';
 
 // API Base
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://dev.bellcollect.ng/app/v1/';

@@ -4,7 +4,7 @@ export type ResponseType<DataType = undefined> = DataType extends void
   ? {
       message: string;
       status: 'error' | 'success';
-      data?: undefined;
+      data?: DataType;
     }
   : {
       message: string;
@@ -27,12 +27,12 @@ export type PaginatedResponseType<T> = ResponseType<{
 }>;
 
 export type QueryListOptionsType = {
-  limit?: number;
-  page?: number;
-  search?: string;
-  from?: string;
-  to?: string;
-  status?: string;
+  limit?: number | null;
+  page?: number | null;
+  search?: string | null;
+  from?: string | null;
+  to?: string | null;
+  status?: string | null;
 };
 
 export type MutationOptionsType<T = void, U = void> = {
@@ -54,6 +54,6 @@ export type ModalBaseRefType = {
   close: () => void;
 };
 
-export type FormRule = AntdFormRule;
-
 export type ReactPaginationState = React.Dispatch<React.SetStateAction<PaginationState>>;
+
+export type FormRule = AntdFormRule;

@@ -11,7 +11,12 @@ import VerifyOtpPage from './pages/auth/VerifyOtp';
 import DashboardPage from './pages/dashboard/Index';
 import WalletPage from './pages/dashboard/WalletPage';
 import TransactionsPage from './pages/dashboard/TransactionPage';
-
+import PaymentLinksPage from './pages/dashboard/PaymentLinksPage';
+import InvoicesPage from './pages/dashboard/InvoicePgae';
+import ActivateBusinessPage from './pages/dashboard/ActivateBusinessPage';
+import FundWalletPage from './pages/dashboard/FundWalletPage';
+import BankTransferPage from './pages/dashboard/BankTransferPage';
+import PayoutsPage from './pages/dashboard/PayoutsPage';
 // Error handling
 import ErrorPage from './pages/error';
 import NotFoundPage from './pages/404';
@@ -66,6 +71,28 @@ const routes: RouteObject[] = [
           {
             path: pageRoutes.DASHBOARD_TRANSACTIONS_PAGE,
             element: <TransactionsPage />
+          },
+            {
+            path: pageRoutes.DASHBOARD_INVOICES_PAGE,
+            element: <InvoicesPage />
+          },
+            {
+            path: pageRoutes.DASHBOARD_PAYMENT_LINKS_PAGE,
+            element: <PaymentLinksPage />
+          }, {
+            path: pageRoutes.DASHBOARD_FUND_WALLET_PAGE,
+            element: <FundWalletPage />
+          },
+           {
+            path: pageRoutes.DASHBOARD_PAYOUTS_PAGE,
+            element: <PayoutsPage />
+          },
+          {
+            path: pageRoutes.DASHBOARD_BANK_TRANSFERS_PAGE,
+            element: <BankTransferPage />
+          }, {
+            path: pageRoutes.DASHBOARD_ACTIVATE_BUSINESS_PAGE,
+            element: <ActivateBusinessPage />
           }
         ],
       },

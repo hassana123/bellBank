@@ -1,11 +1,10 @@
-// src/store/contexts/query-provider.tsx
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import React from 'react';
 
-import { CSRF_TOKEN } from '~/config/app';
 import { useAuthContext } from './auth/context';
 import { useAlertContext } from './alert/context';
+import { CSRF_TOKEN } from '../../config/app';
 import { handleAllErrors } from '../../utils/errors';
 
 function QueryProvider({ children }: { children: React.ReactNode }) {

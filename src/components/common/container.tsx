@@ -24,7 +24,7 @@ export default function Container({
   const { goBack } = useNavigate();
 
   return (
-    <div className={`container-wrapper ${className}`}>
+    <div className={` ${className}`}>
       {(backButton || title || description || actions) && (
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4 w-full">
           <div className="flex">
@@ -48,8 +48,8 @@ export default function Container({
             )}
             {(title || description) && (
               <div>
-                {title && <h1 className="secondary-text-color font-medium mb-1 text-base md:text-lg">{title}</h1>}
-                {description && <p className="secondary-text-color leading-6 text-sm">{description}</p>}
+                {title && <h1 className="secondary-text-color dark:text-white font-medium mb-1 text-base md:text-lg">{title}</h1>}
+                {description && <p className="secondary-text-color dark:text-white leading-6 text-sm">{description}</p>}
               </div>
             )}
           </div>

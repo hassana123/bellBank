@@ -7,7 +7,7 @@ const { Title, Text } = Typography;
 
 export default function SimpleComingSoonPage({ pageNotFound }: { pageNotFound?: boolean }) {
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
+    <Layout style={{ minHeight: '100vh' }} className="bg-background"> {/* Changed background to bg-background */}
       <Content
         style={{
           display: 'flex',
@@ -18,19 +18,19 @@ export default function SimpleComingSoonPage({ pageNotFound }: { pageNotFound?: 
       >
         <Space direction="vertical" size="large" align="center">
           {pageNotFound ? (
-            <WarningOutlined className="primary-text-color" style={{ fontSize: '64px' }} />
+            <WarningOutlined className="text-primary" style={{ fontSize: '64px' }} /> 
           ) : (
-            <RocketOutlined className="primary-text-color" style={{ fontSize: '64px' }} />
+            <RocketOutlined className="text-primary" style={{ fontSize: '64px' }} />
           )}
-          <Title level={1} style={{ marginBottom: 0 }}>
+          <Title level={1} className="text-foreground" style={{ marginBottom: 0 }}> {/* Added text-foreground */}
             {pageNotFound ? 'Oops, Page Not Found' : 'Coming Soon'}
           </Title>
-          <Text style={{ fontSize: '18px', textAlign: 'center' }}>
+          <Text className="text-muted-foreground" style={{ fontSize: '18px', textAlign: 'center' }}> {/* Added text-muted-foreground */}
             {pageNotFound
               ? "It seems what you're looking for is no longer available"
               : "We're launching something exciting. Stay tuned!"}
           </Text>
-          <Text type="secondary">
+          <Text type="secondary" className="text-muted-foreground"> {/* Added text-muted-foreground */}
             © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
           </Text>
         </Space>

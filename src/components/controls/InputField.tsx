@@ -31,7 +31,7 @@ export default function InputField({
 
   return (
     <Form.Item
-      label={<span className="text-sm font-medium text-gray-700">{label}</span>}
+      label={<span className="text-sm font-medium dark:text-white text-gray-700">{label}</span>}
       name={name}
       rules={rules}
       validateTrigger={validateTrigger}

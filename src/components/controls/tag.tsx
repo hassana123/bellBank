@@ -10,7 +10,7 @@ export type TagType = Omit<TagProps, 'icon'> & {
 };
 
 function Tag({ title, icon: Icon, className, ...props }: TagType) {
-  const classes = classNames('inline-flex items-center w-auto', className || '');
+  const classes = classNames('inline-flex text-sm items-center w-auto', className || '');
 
   return (
     <AntdTag

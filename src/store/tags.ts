@@ -1,9 +1,19 @@
-// src/store/tags.ts
 const tags = {
   Auth: 'Auth',
-  // START: Added for Netlify CSRF handling
-  CsrfToken: 'CsrfToken',
-  // END: Added for Netlify CSRF handling
+  Business: 'Business',
+  Card: 'Card',
+  CardRequest: 'CardRequest',
+  Dashboard: 'Dashboard',
+  Fleet: 'Fleet',
+  FundRequest: 'FundRequest',
+  HoldingBalance: 'HoldingBalance',
+  Settlement: 'Settlement',
+  SettlementAccount: 'SettlementAccount',
+  Settings: 'Settings',
+  Staff: 'Staff',
+  Substation: 'Substation',
+  SubstationTransaction: 'SubstationTransaction',
+  Transaction: 'Transaction',
 };
 
 export default tags;
